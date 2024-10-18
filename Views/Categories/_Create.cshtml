@@ -1,0 +1,75 @@
+﻿@model PurchaseManagement.Entity.Category
+
+<div class="row">
+    <div class="col-md-4">
+        <h3 id="form-title">New Category</h3>
+        <form asp-controller="Categories" asp-action="Create" id="categoryForm">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" readonly type="text" id="catId"/>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group pt-1">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="catName"/>
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-primary" id="btnSubmit"/>
+                <input type="button" value="Cancel" class="btn btn-secondary" id="btnCancel" onclick="onCancel()" style="display:none" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        // Handle the form submit using AJAX
+        $("#categoryForm").submit(function (event) {
+            event.preventDefault(); // Prevent the default form submission
+            
+            // Perform an AJAX GET request to the action specified in the form
+            /*$.post($(this).attr("action"), $(this).serialize(), function (data) {
+                // Replace the content inside the 'category-list' div with the received data
+                $("#category-list").html(data);
+            });*/
+
+            var formData = $(this).serialize();
+            var id = $("#catId").val();
+            var url = (id ? '@Url.Action("Edit", "Categories")' : '@Url.Action("Create", "Categories")');
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Update the category list dynamically on success
+                    $("#category-list").html(response);
+                    alert(id ? 'Category updated successfully.' : 'Category created successfully.');
+
+                    // Reset the form for a new entry
+                    resetForm();
+                },
+                error: function() {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        });
+    });
+
+    function resetForm() {
+        $("#categoryForm")[0].reset();
+        $("#form-title").text("New Category");
+        $("#catId").val(""); // Clear ID for new create operations
+        $("#btnSubmit").val("Create");
+        $("#btnCancel").hide();
+    }
+
+    function onCancel() {
+        resetForm();
+    }
+</script>

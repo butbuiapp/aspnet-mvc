@@ -1,0 +1,20 @@
+﻿@model IEnumerable<PurchaseManagement.Entity.Category>
+
+@{
+    ViewData["Title"] = "Category Management";
+}
+
+<h1>Category Management</h1>
+
+<div class="mt-5">
+    <div class="justify-content-center mt-2 border p-3">
+        @await Html.PartialAsync("_Create", new PurchaseManagement.Entity.Category())
+    </div>
+</div>
+
+<div id="category-list" class="mt-5">
+    @await Html.PartialAsync("_List", Model, null)
+</div>
+
+
+

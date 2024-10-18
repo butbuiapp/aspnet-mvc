@@ -1,0 +1,68 @@
+﻿@model IEnumerable<PurchaseManagement.Entity.Category>
+
+@if (Model != null && Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Id)</th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>@Html.DisplayNameFor(model => model.CreatedDate)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr id="row-@item.Id">
+                    <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>@Html.DisplayFor(modelItem => item.CreatedDate)</td>
+                    <td>
+                        <a href="javascript:void(0);" onclick="edit('@item.Id', '@item.Name')">Edit</a> |
+                        <a href="javascript:void(0);" onclick="confirmDelete('@item.Id')">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No results found.</p>
+}
+
+<script type="text/javascript">
+    function confirmDelete(id) {
+        if (confirm('Are you sure you want to delete this category?')) {
+            $.ajax({
+                url: '@Url.Action("Delete", "Categories")/' + id,
+                type: 'DELETE',
+                success: function (response) {
+                    if (response.success) {
+                        // Remove the row from the table
+                        $('#row-' + id).remove();
+                        alert('Category deleted successfully.');
+                    } else {
+                        alert('An error occurred while deleting the category.');
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+    }
+
+    function edit(catId, catName) {
+        $("#catId").val(catId);
+        $("#catName").val(catName);
+        $("#form-title").text("Edit Category");
+        $("#btnSubmit").val("Update");
+        $("#btnCancel").show();
+    }
+</script>                    

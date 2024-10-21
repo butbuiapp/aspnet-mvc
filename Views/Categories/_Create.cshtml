@@ -7,12 +7,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" readonly type="text" id="catId"/>
+                <input asp-for="Id" class="form-control" readonly type="text" id="catId" />
                 <span asp-validation-for="Id" class="text-danger"></span>
             </div>
             <div class="form-group pt-1">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" id="catName"/>
+                <input asp-for="Name" class="form-control" id="catName" required/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
@@ -39,9 +39,16 @@
                 $("#category-list").html(data);
             });*/
 
+            // Trigger validation manually
+            if (!$(this).valid()) {
+                return false; // If validation fails, do not submit the form
+            }
+
             var formData = $(this).serialize();
             var id = $("#catId").val();
-            var url = (id ? '@Url.Action("Edit", "Categories")' : '@Url.Action("Create", "Categories")');
+            var url = (id>0 ? '@Url.Action("Edit", "Categories")' : '@Url.Action("Create", "Categories")');
+            alert(id)
+            alert(url);
             $.ajax({
                 url: url,
                 type: 'POST',
@@ -49,7 +56,7 @@
                 success: function (response) {
                     // Update the category list dynamically on success
                     $("#category-list").html(response);
-                    alert(id ? 'Category updated successfully.' : 'Category created successfully.');
+                    alert(id>0 ? 'Category updated successfully.' : 'Category created successfully.');
 
                     // Reset the form for a new entry
                     resetForm();
@@ -64,7 +71,7 @@
     function resetForm() {
         $("#categoryForm")[0].reset();
         $("#form-title").text("New Category");
-        $("#catId").val(""); // Clear ID for new create operations
+        $("#catId").val("0"); // Clear ID for new create operations
         $("#btnSubmit").val("Create");
         $("#btnCancel").hide();
     }

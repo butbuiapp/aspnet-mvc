@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PurchaseManagement.Entity;
 using PurchaseManagement.Repository;
 
@@ -23,10 +24,16 @@ namespace PurchaseManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Category category)
         {
-            category.CreatedDate = DateTime.Now;
-            await this._applicationRepository.CreateAsync(category);
-            var categories = await this._applicationRepository.GetAllAsync();
-            return PartialView("_List", categories);
+            if (ModelState.IsValid)
+            {
+                category.CreatedDate = DateTime.Now;
+                await this._applicationRepository.CreateAsync(category);
+                var categories = await this._applicationRepository.GetAllAsync();
+                return PartialView("_List", categories);
+            } else {
+                var categories = await this._applicationRepository.GetAllAsync();
+                return PartialView("_List", categories);
+            }
         }
 
         [HttpPost]

@@ -10,8 +10,8 @@ namespace PurchaseManagement.Entity
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        [Required(ErrorMessage = "The Name field is required.")]
+        [StringLength(100, ErrorMessage = "The Name must be less than 100 characters.")]
         public string Name { get; set; }
 
         [MaxLength(200)]
